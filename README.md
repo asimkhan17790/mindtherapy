@@ -1,1 +1,1 @@
-# midtherapy
+# mindtherapy

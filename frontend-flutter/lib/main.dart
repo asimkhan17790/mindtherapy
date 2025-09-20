@@ -10,6 +10,7 @@ import 'screens/home_screen.dart';
 import 'screens/mood_screen.dart';
 import 'screens/suggestions_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/mood_trends_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +53,7 @@ class MindTherapyApp extends StatelessWidget {
           '/mood': (context) => const MoodScreen(),
           '/suggestions': (context) => const SuggestionsScreen(),
           '/settings': (context) => const SettingsScreen(),
+          '/trends': (context) => const MoodTrendsScreen(),
         },
       ),
     );

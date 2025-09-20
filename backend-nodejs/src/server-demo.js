@@ -46,7 +46,7 @@ const tasks = [
     id: '1',
     title: 'Call someone you love',
     description: 'Reach out to family or friends. Connection heals the heart.',
-    moodTags: ['sad', 'neutral'],
+    moodTags: ['sad', 'low', 'anxious'],
     category: 'family',
     estimatedMinutes: 10
   },
@@ -54,7 +54,7 @@ const tasks = [
     id: '2',
     title: 'Take 5 deep breaths',
     description: 'Focus on your breathing and be present in this moment.',
-    moodTags: ['sad', 'neutral'],
+    moodTags: ['sad', 'anxious', 'stressed'],
     category: 'self-care',
     estimatedMinutes: 5
   },
@@ -62,7 +62,7 @@ const tasks = [
     id: '3',
     title: 'Go for a 10-minute walk',
     description: 'Fresh air and movement can shift your energy.',
-    moodTags: ['neutral', 'sad'],
+    moodTags: ['neutral', 'low', 'tired'],
     category: 'activity',
     estimatedMinutes: 10
   },
@@ -70,7 +70,7 @@ const tasks = [
     id: '4',
     title: 'Write 3 things you\'re grateful for',
     description: 'Gratitude shifts our perspective to abundance.',
-    moodTags: ['neutral', 'happy'],
+    moodTags: ['neutral', 'good', 'happy'],
     category: 'self-care',
     estimatedMinutes: 5
   },
@@ -78,7 +78,7 @@ const tasks = [
     id: '5',
     title: 'Listen to your favorite song',
     description: 'Music can lift your spirits and connect you to joy.',
-    moodTags: ['sad', 'neutral', 'happy'],
+    moodTags: ['sad', 'neutral', 'happy', 'low'],
     category: 'activity',
     estimatedMinutes: 5
   },
@@ -86,7 +86,7 @@ const tasks = [
     id: '6',
     title: 'Do a 2-minute meditation',
     description: 'Even a short practice can bring peace and clarity.',
-    moodTags: ['sad', 'neutral'],
+    moodTags: ['anxious', 'stressed', 'neutral'],
     category: 'self-care',
     estimatedMinutes: 2
   },
@@ -94,8 +94,48 @@ const tasks = [
     id: '7',
     title: 'Text a friend you haven\'t talked to',
     description: 'Reconnecting can bring unexpected joy to both of you.',
-    moodTags: ['neutral', 'happy'],
+    moodTags: ['neutral', 'good', 'happy'],
     category: 'social',
+    estimatedMinutes: 5
+  },
+  {
+    id: '8',
+    title: 'Stretch for 5 minutes',
+    description: 'Release tension and reconnect with your body.',
+    moodTags: ['tired', 'stressed', 'neutral'],
+    category: 'self-care',
+    estimatedMinutes: 5
+  },
+  {
+    id: '9',
+    title: 'Write in a journal',
+    description: 'Express your thoughts and emotions freely.',
+    moodTags: ['sad', 'anxious', 'angry', 'stressed'],
+    category: 'self-care',
+    estimatedMinutes: 15
+  },
+  {
+    id: '10',
+    title: 'Watch something funny',
+    description: 'Laughter is medicine for the soul.',
+    moodTags: ['sad', 'low', 'neutral'],
+    category: 'activity',
+    estimatedMinutes: 20
+  },
+  {
+    id: '11',
+    title: 'Take a warm shower or bath',
+    description: 'Self-care through gentle, nurturing activities.',
+    moodTags: ['tired', 'stressed', 'low'],
+    category: 'self-care',
+    estimatedMinutes: 15
+  },
+  {
+    id: '12',
+    title: 'Celebrate a small win',
+    description: 'Acknowledge something good you did today.',
+    moodTags: ['good', 'happy', 'amazing'],
+    category: 'self-care',
     estimatedMinutes: 5
   }
 ];
@@ -129,7 +169,11 @@ app.get('/api/affirmations', (req, res) => {
 app.post('/api/mood', (req, res) => {
   const mood = {
     id: Date.now().toString(),
-    ...req.body,
+    userId: req.body.userId,
+    moodType: req.body.moodType,
+    notes: req.body.notes || '',
+    intensity: req.body.intensity || 3,
+    tags: req.body.tags || [],
     timestamp: new Date().toISOString()
   };
   moods.unshift(mood); // Add to beginning

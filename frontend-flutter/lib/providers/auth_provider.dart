@@ -41,7 +41,7 @@ class AuthProvider with ChangeNotifier {
       if (token != null && loginTimestamp != null) {
         final now = DateTime.now().millisecondsSinceEpoch;
         final sessionAge = now - loginTimestamp;
-        final sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+        const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
 
         if (sessionAge < sevenDaysInMs) {
           _accessToken = token;
@@ -49,8 +49,7 @@ class AuthProvider with ChangeNotifier {
           // Load user data from cache if available
           if (userData != null) {
             try {
-              final userMap = Map<String, dynamic>.from(
-                  json.decode(userData));
+              final userMap = Map<String, dynamic>.from(json.decode(userData));
               _user = User.fromJson(userMap);
               _isAuthenticated = true;
             } catch (e) {
@@ -93,7 +92,8 @@ class AuthProvider with ChangeNotifier {
       // For web, idToken might be null due to google_sign_in_web limitations
       // In this case, we'll create a temporary demo user for development
       if (idToken == null) {
-        debugPrint('Google Sign-In: idToken is null (common on web), using demo authentication');
+        debugPrint(
+            'Google Sign-In: idToken is null (common on web), using demo authentication');
 
         // Create a demo user with Google account info
         _user = User(
@@ -223,7 +223,8 @@ class AuthProvider with ChangeNotifier {
 
     if (_accessToken != null) {
       await prefs.setString('access_token', _accessToken!);
-      await prefs.setInt('login_timestamp', DateTime.now().millisecondsSinceEpoch);
+      await prefs.setInt(
+          'login_timestamp', DateTime.now().millisecondsSinceEpoch);
     }
 
     if (_user != null) {

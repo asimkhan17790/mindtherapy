@@ -59,7 +59,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   'Your personal mental wellness companion',
                   style: GoogleFonts.inter(
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.7),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -82,7 +85,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         } else if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Sign in failed. Please try again.'),
+                              content:
+                                  Text('Sign in failed. Please try again.'),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -137,7 +141,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   'By signing in, you agree to our Terms of Service and Privacy Policy',
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -148,7 +155,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest
+                        .withOpacity(0.5),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(

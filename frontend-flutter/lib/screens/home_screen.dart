@@ -93,7 +93,7 @@ class _HomeTab extends StatelessWidget {
           Consumer<AuthProvider>(
             builder: (context, authProvider, child) {
               final user = authProvider.user;
-              final firstName = user?.name?.split(' ').first ?? 'Beautiful';
+              final firstName = user?.name.split(' ').first ?? 'Beautiful';
 
               return Text(
                 'Good ${_getTimeOfDay()}, $firstName!',

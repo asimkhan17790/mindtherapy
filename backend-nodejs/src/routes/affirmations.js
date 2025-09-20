@@ -5,20 +5,18 @@ const router = express.Router();
 // GET /api/affirmations/random - Get random affirmation
 router.get('/random', async (req, res) => {
   try {
-    const count = await Affirmation.countDocuments();
-    
-    if (count === 0) {
+    // Use aggregation with $sample for a truly random document
+    const docs = await Affirmation.aggregate([{ $sample: { size: 1 } }]);
+
+    if (!docs || docs.length === 0) {
       // Fallback affirmation if database is empty
       return res.json({
         message: "You are stronger than you think, and you've got this! 💪",
         category: "motivation"
       });
     }
-    
-    const random = Math.floor(Math.random() * count);
-    const affirmation = await Affirmation.findOne().skip(random);
-    
-    res.json(affirmation);
+
+    res.json(docs[0]);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching affirmation', error: error.message });
   }

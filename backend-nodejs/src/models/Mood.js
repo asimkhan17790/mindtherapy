@@ -4,13 +4,13 @@ const moodSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
-    index: true
+    // indexed via moodSchema.index({ userId: 1, timestamp: -1 }) below
   },
   moodType: {
     type: String,
     required: true,
     enum: ['amazing', 'happy', 'good', 'neutral', 'low', 'sad', 'anxious', 'angry', 'tired', 'stressed'],
-    index: true
+    // index not declared here to avoid duplicates; use schema-level indexes if needed
   },
   notes: {
     type: String,
@@ -28,8 +28,8 @@ const moodSchema = new mongoose.Schema({
   }],
   timestamp: {
     type: Date,
-    default: Date.now,
-    index: true
+    default: Date.now
+    // indexed via moodSchema.index({ userId: 1, timestamp: -1 }) below
   }
 }, {
   timestamps: true

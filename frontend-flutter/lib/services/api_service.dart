@@ -5,10 +5,15 @@ import '../models/affirmation.dart';
 import '../models/task.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:3000/api'; // Connected to our demo backend
-  
-  static const Map<String, String> headers = {
+  static const String baseUrl = 'http://localhost:3001/api'; // Connected to our demo backend
+
+  static Map<String, String> get headers => {
     'Content-Type': 'application/json',
+  };
+
+  static Map<String, String> headersWithAuth(String token) => {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
   };
 
   // Affirmations
@@ -39,11 +44,67 @@ class ApiService {
     }
   }
 
+  // Authentication
+  static Future<Map<String, dynamic>> signInWithGoogle(String idToken) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/google-signin'),
+      headers: headers,
+      body: jsonEncode({'idToken': idToken}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to sign in with Google');
+    }
+  }
+
+  static Future<Map<String, dynamic>> getUserProfile(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/auth/profile'),
+      headers: headersWithAuth(token),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to get user profile');
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateUserPreferences(
+      String token, Map<String, dynamic> preferences) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/auth/preferences'),
+      headers: headersWithAuth(token),
+      body: jsonEncode({'preferences': preferences}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to update preferences');
+    }
+  }
+
+  static Future<Map<String, dynamic>> verifyToken(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/auth/verify'),
+      headers: headersWithAuth(token),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to verify token');
+    }
+  }
+
   // Moods
-  static Future<Mood> saveMood(Mood mood) async {
+  static Future<Mood> saveMood(Mood mood, String token) async {
     final response = await http.post(
       Uri.parse('$baseUrl/mood'),
-      headers: headers,
+      headers: headersWithAuth(token),
       body: jsonEncode(mood.toJson()),
     );
 
@@ -54,10 +115,10 @@ class ApiService {
     }
   }
 
-  static Future<List<Mood>> getUserMoods(String userId) async {
+  static Future<List<Mood>> getUserMoods(String token) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/mood/user/$userId'),
-      headers: headers,
+      Uri.parse('$baseUrl/mood/history'),
+      headers: headersWithAuth(token),
     );
 
     if (response.statusCode == 200) {
@@ -65,6 +126,21 @@ class ApiService {
       return data.map((json) => Mood.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load mood history');
+    }
+  }
+
+  static Future<Mood?> getLatestMood(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/mood/latest'),
+      headers: headersWithAuth(token),
+    );
+
+    if (response.statusCode == 200) {
+      return Mood.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      return null;
+    } else {
+      throw Exception('Failed to load latest mood');
     }
   }
 

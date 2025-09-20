@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/affirmation_provider.dart';
 import '../providers/mood_provider.dart';
+import '../providers/auth_provider.dart';
 import 'mood_trends_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,11 +19,19 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _loadData();
   }
 
   Future<void> _loadData() async {
-    await context.read<MoodProvider>().loadMoodHistory(_userId);
+    final moodProvider = context.read<MoodProvider>();
+    if (!moodProvider.isLoading) {
+      await moodProvider.loadMoodHistory(_userId);
+    }
   }
 
   @override
@@ -81,16 +90,23 @@ class _HomeTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Greeting
-          Text(
-            'Good ${_getTimeOfDay()}, Beautiful!',
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              final user = authProvider.user;
+              final firstName = user?.name?.split(' ').first ?? 'Beautiful';
+
+              return Text(
+                'Good ${_getTimeOfDay()}, $firstName!',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            },
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // Today's Affirmation Card
           Consumer<AffirmationProvider>(
             builder: (context, provider, child) {
@@ -147,9 +163,9 @@ class _HomeTab extends StatelessWidget {
               );
             },
           ),
-          
+
           const SizedBox(height: 30),
-          
+
           // Quick Mood Check-in Card
           const Text(
             'How are you feeling today?',
@@ -170,13 +186,18 @@ class _HomeTab extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        _getColorFromHex(provider.currentMood!.moodColor.substring(1)).withOpacity(0.2),
-                        _getColorFromHex(provider.currentMood!.moodColor.substring(1)).withOpacity(0.1),
+                        _getColorFromHex(
+                                provider.currentMood!.moodColor.substring(1))
+                            .withOpacity(0.2),
+                        _getColorFromHex(
+                                provider.currentMood!.moodColor.substring(1))
+                            .withOpacity(0.1),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(
-                      color: _getColorFromHex(provider.currentMood!.moodColor.substring(1)),
+                      color: _getColorFromHex(
+                          provider.currentMood!.moodColor.substring(1)),
                       width: 1,
                     ),
                   ),
@@ -252,16 +273,16 @@ class _HomeTab extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.favorite_outline,
                         color: Colors.white,
                         size: 24,
                       ),
-                      const SizedBox(width: 12),
-                      const Text(
+                      SizedBox(width: 12),
+                      Text(
                         'Check in with your mood',
                         style: TextStyle(
                           fontSize: 18,
@@ -286,11 +307,13 @@ class _HomeTab extends StatelessWidget {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () => Navigator.pushNamed(context, '/suggestions'),
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/suggestions'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: Theme.of(context).primaryColor,
-                              side: BorderSide(color: Theme.of(context).primaryColor),
+                              side: BorderSide(
+                                  color: Theme.of(context).primaryColor),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -301,7 +324,8 @@ class _HomeTab extends StatelessWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () => Navigator.pushNamed(context, '/mood'),
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/mood'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Theme.of(context).primaryColor,
                               foregroundColor: Colors.white,
@@ -320,7 +344,7 @@ class _HomeTab extends StatelessWidget {
               return const SizedBox.shrink();
             },
           ),
-          
+
           const SizedBox(height: 30),
 
           // Quick Stats and Reminders
@@ -546,7 +570,6 @@ class _QuickStatCard extends StatelessWidget {
     );
   }
 }
-
 
 class _ProfileTab extends StatelessWidget {
   const _ProfileTab();

@@ -59,8 +59,10 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _initializeApp() async {
-    // Load today's affirmation
-    await context.read<AffirmationProvider>().loadTodaysAffirmation();
+    // Load today's affirmation - delayed to avoid calling during build
+    Future.microtask(() async {
+      await context.read<AffirmationProvider>().loadTodaysAffirmation();
+    });
 
     // Start animations
     _animationController.forward();
@@ -99,36 +101,40 @@ class _SplashScreenState extends State<SplashScreen>
             ],
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Floating particles background effect
-              ...List.generate(6, (index) => Positioned(
-                top: 100.0 + (index * 100),
-                left: 50.0 + (index * 60),
-                child: AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) {
-                    return Transform.translate(
-                      offset: Offset(
-                        10 * (_animationController.value - 0.5),
-                        5 * (_animationController.value - 0.5),
+        child: Stack(
+          children: [
+            // Floating particles background effect
+            ...List.generate(
+                6,
+                (index) => Positioned(
+                      top: 100.0 + (index * 100),
+                      left: 50.0 + (index * 60),
+                      child: AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(
+                              10 * (_animationController.value - 0.5),
+                              5 * (_animationController.value - 0.5),
+                            ),
+                            child: Opacity(
+                              opacity: 0.1,
+                              child: Icon(
+                                Icons.favorite,
+                                size: 20 + (index * 5),
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                      child: Opacity(
-                        opacity: 0.1,
-                        child: Icon(
-                          Icons.favorite,
-                          size: 20 + (index * 5),
-                          color: Colors.white,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              )),
+                    )),
 
-              ScaleTransition(
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ScaleTransition(
                 scale: _scaleAnimation,
                 child: FadeTransition(
                   opacity: _fadeAnimation,
@@ -174,7 +180,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                       // App Name with enhanced typography
                       ShaderMask(
-                        shaderCallback: (bounds) => LinearGradient(
+                        shaderCallback: (bounds) => const LinearGradient(
                           colors: [Colors.white, Colors.white70],
                         ).createShader(bounds),
                         child: const Text(
@@ -192,7 +198,8 @@ class _SplashScreenState extends State<SplashScreen>
 
                       // Enhanced tagline
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(25),
@@ -205,7 +212,7 @@ class _SplashScreenState extends State<SplashScreen>
                           '✨ Your daily dose of positivity',
                           style: TextStyle(
                             fontSize: 16,
-                            color: const Color(0xE6FFFFFF),
+                            color: Color(0xE6FFFFFF),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -217,7 +224,7 @@ class _SplashScreenState extends State<SplashScreen>
                       Consumer<AffirmationProvider>(
                         builder: (context, provider, child) {
                           if (provider.isLoading) {
-                            return Column(
+                            return const Column(
                               children: [
                                 SizedBox(
                                   width: 30,
@@ -227,7 +234,7 @@ class _SplashScreenState extends State<SplashScreen>
                                     strokeWidth: 3,
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                SizedBox(height: 16),
                                 Text(
                                   'Preparing your daily inspiration...',
                                   style: TextStyle(
@@ -241,7 +248,8 @@ class _SplashScreenState extends State<SplashScreen>
 
                           if (provider.todaysAffirmation != null) {
                             return Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 30),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 30),
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.15),
@@ -260,7 +268,7 @@ class _SplashScreenState extends State<SplashScreen>
                               ),
                               child: Column(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.format_quote,
                                     color: Colors.white70,
                                     size: 24,
@@ -305,10 +313,13 @@ class _SplashScreenState extends State<SplashScreen>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: List.generate(3, (index) {
                               final delay = index * 0.2;
-                              final animValue = (_animationController.value - delay).clamp(0.0, 1.0);
+                              final animValue =
+                                  (_animationController.value - delay)
+                                      .clamp(0.0, 1.0);
 
                               return Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 4),
                                 width: 8,
                                 height: 8,
                                 decoration: BoxDecoration(
@@ -324,8 +335,10 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
               ),
-            ],
-          ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

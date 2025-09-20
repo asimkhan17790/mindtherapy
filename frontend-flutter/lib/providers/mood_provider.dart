@@ -15,14 +15,14 @@ class MoodProvider with ChangeNotifier {
   String? get error => _error;
 
   // Submit mood
-  Future<void> submitMood(String moodType, String? notes, String userId, {int? intensity, List<String>? tags}) async {
+  Future<void> submitMood(String moodType, String? notes, String token, {int? intensity, List<String>? tags}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
       final mood = Mood(
-        userId: userId,
+        userId: '', // Backend will use authenticated user ID
         moodType: moodType,
         notes: notes ?? '',
         timestamp: DateTime.now(),
@@ -30,12 +30,12 @@ class MoodProvider with ChangeNotifier {
         tags: tags ?? [],
       );
 
-      final savedMood = await ApiService.saveMood(mood);
+      final savedMood = await ApiService.saveMood(mood, token);
       _currentMood = savedMood;
-      
+
       // Add to history
       _moodHistory.insert(0, savedMood);
-      
+
       _isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -46,17 +46,17 @@ class MoodProvider with ChangeNotifier {
   }
 
   // Load mood history
-  Future<void> loadMoodHistory(String userId) async {
+  Future<void> loadMoodHistory(String token) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      _moodHistory = await ApiService.getUserMoods(userId);
+      _moodHistory = await ApiService.getUserMoods(token);
       if (_moodHistory.isNotEmpty) {
         _currentMood = _moodHistory.first;
       }
-      
+
       _isLoading = false;
       notifyListeners();
     } catch (e) {

@@ -115,9 +115,7 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-
         const SizedBox(height: 16),
-
         Row(
           children: [
             Expanded(
@@ -129,9 +127,7 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
                 color: Colors.orange,
               ),
             ),
-
             const SizedBox(width: 12),
-
             Expanded(
               child: _StatCard(
                 title: 'Total Logs',
@@ -141,9 +137,7 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
                 color: Colors.blue,
               ),
             ),
-
             const SizedBox(width: 12),
-
             Expanded(
               child: _StatCard(
                 title: 'This Week',
@@ -183,9 +177,7 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
             ),
           ],
         ),
-
         const SizedBox(height: 16),
-
         SizedBox(
           height: 120,
           child: ListView.builder(
@@ -258,9 +250,7 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-
         const SizedBox(height: 16),
-
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -317,9 +307,7 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
                     ),
                   ],
                 ),
-
               const SizedBox(height: 20),
-
               ...sortedStats.map((entry) {
                 final mood = Mood(
                   userId: '',
@@ -327,7 +315,8 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
                   notes: '',
                   timestamp: DateTime.now(),
                 );
-                final percentage = (entry.value / provider.moodHistory.length * 100).round();
+                final percentage =
+                    (entry.value / provider.moodHistory.length * 100).round();
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -347,7 +336,8 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
                               children: [
                                 Text(
                                   mood.moodLabel,
-                                  style: const TextStyle(fontWeight: FontWeight.w500),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w500),
                                 ),
                                 Text(
                                   '$percentage%',
@@ -372,7 +362,7 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
                     ],
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),
@@ -391,9 +381,7 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-
         const SizedBox(height: 16),
-
         ...provider.moodHistory.map((mood) => _MoodHistoryCard(mood: mood)),
       ],
     );
@@ -558,20 +546,23 @@ class _MoodHistoryCard extends StatelessWidget {
                       Wrap(
                         spacing: 6,
                         runSpacing: 4,
-                        children: mood.tags.map((tag) => Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            tag,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        )).toList(),
+                        children: mood.tags
+                            .map((tag) => Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    tag,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
                       ),
                     ],
                     if (mood.notes.isNotEmpty) ...[

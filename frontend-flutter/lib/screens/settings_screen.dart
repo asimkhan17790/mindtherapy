@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/auth_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -78,6 +80,89 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
+          // Account Section
+          const Text(
+            'Account',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(height: 15),
+
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              final user = authProvider.user;
+              return Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: user?.picture != null
+                            ? NetworkImage(user!.picture!)
+                            : null,
+                        child: user?.picture == null
+                            ? const Icon(Icons.person)
+                            : null,
+                      ),
+                      title: Text(user?.name ?? 'Not signed in'),
+                      subtitle: Text(user?.email ?? 'No email available'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () {
+                        Navigator.of(context).pushNamed('/profile');
+                      },
+                    ),
+
+                    const Divider(height: 1),
+
+                    ListTile(
+                      leading: const Icon(Icons.logout),
+                      title: const Text('Sign Out'),
+                      subtitle: const Text('Sign out of your account'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () async {
+                        final shouldSignOut = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Sign Out'),
+                            content: const Text('Are you sure you want to sign out?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text('Sign Out'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (shouldSignOut == true) {
+                          await authProvider.signOut();
+                          if (context.mounted) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/login',
+                              (route) => false,
+                            );
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+
+          const SizedBox(height: 30),
+
           // Notifications Section
           const Text(
             'Notifications',

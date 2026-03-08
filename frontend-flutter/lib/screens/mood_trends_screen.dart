@@ -73,11 +73,14 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
 
           return RefreshIndicator(
             onRefresh: _loadMoodHistory,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                   // Stats Overview
                   _buildStatsSection(provider),
 
@@ -96,6 +99,8 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
                   // Full History
                   _buildHistorySection(provider),
                 ],
+                  ),
+                ),
               ),
             ),
           );

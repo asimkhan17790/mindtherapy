@@ -103,11 +103,14 @@ class _MoodScreenState extends State<MoodScreen> with TickerProviderStateMixin {
       ),
       body: Consumer<MoodProvider>(
         builder: (context, provider, child) {
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                 // Header with encouragement
                 Container(
                   width: double.infinity,
@@ -470,6 +473,8 @@ class _MoodScreenState extends State<MoodScreen> with TickerProviderStateMixin {
 
                 const SizedBox(height: 20),
               ],
+                ),
+              ),
             ),
           );
         },

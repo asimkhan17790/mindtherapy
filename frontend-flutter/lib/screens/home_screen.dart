@@ -16,18 +16,24 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final String _userId = 'user123'; // TODO: Replace with actual user ID
 
+  bool _dataLoaded = false;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadData());
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadData();
+    if (!_dataLoaded) {
+      _dataLoaded = true;
+    }
   }
 
   Future<void> _loadData() async {
+    if (!mounted) return;
     final moodProvider = context.read<MoodProvider>();
     if (!moodProvider.isLoading) {
       await moodProvider.loadMoodHistory(_userId);
@@ -84,11 +90,14 @@ class _HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 800),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
           // Greeting
           Consumer<AuthProvider>(
             builder: (context, authProvider, child) {
@@ -411,6 +420,8 @@ class _HomeTab extends StatelessWidget {
             subtitle: 'Be patient and kind with yourself',
           ),
         ],
+          ),
+        ),
       ),
     );
   }

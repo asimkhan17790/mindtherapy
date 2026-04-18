@@ -107,11 +107,14 @@ class _SuggestionsScreenState extends State<SuggestionsScreen> {
             );
           }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                 // Header
                 if (_selectedMood != null) ...[
                   Text(
@@ -170,6 +173,8 @@ class _SuggestionsScreenState extends State<SuggestionsScreen> {
                   ],
                 ),
               ],
+                ),
+              ),
             ),
           );
         },

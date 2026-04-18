@@ -129,11 +129,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                 // Profile Header
                 Container(
                   width: double.infinity,
@@ -417,6 +420,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 const SizedBox(height: 32),
               ],
+                ),
+              ),
             ),
           );
         },

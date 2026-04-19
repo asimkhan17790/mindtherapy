@@ -25,21 +25,18 @@ class Affirmation {
   }
 
   // Helper methods
-  String get categoryIcon {
-    switch (category) {
-      case 'motivation':
-        return '💪';
-      case 'self-love':
-        return '💖';
-      case 'strength':
-        return '🌟';
-      case 'gratitude':
-        return '🙏';
-      case 'mindfulness':
-        return '🧘';
-      default:
-        return '✨';
-    }
+  String get cleanMessage => _stripEmoji(message);
+
+  static String _stripEmoji(String text) {
+    return text
+        .replaceAll(
+          RegExp(
+            r'[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}]+',
+            unicode: true,
+          ),
+          '',
+        )
+        .trim();
   }
 
   String get categoryLabel {

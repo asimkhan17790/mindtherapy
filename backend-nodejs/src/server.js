@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const affirmationRoutes = require('./routes/affirmations');
@@ -13,11 +14,37 @@ const { router: authRoutes } = require('./routes/auth');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:8081', 'http://localhost:3000'];
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { message: 'Too many requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  message: { message: 'Too many requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Middleware
 app.use(helmet());
-app.use(cors());
-app.use(morgan('combined'));
-app.use(express.json());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
+app.use(morgan('short'));
+app.use(express.json({ limit: '10kb' }));
 
 // Connect to MongoDB (use MONGODB_URI env var, fallback to local)
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mindtherapy';
@@ -35,10 +62,10 @@ mongoose.connect(mongoUri)
   });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/affirmations', affirmationRoutes);
-app.use('/api/mood', moodRoutes);
-app.use('/api/tasks', taskRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/affirmations', apiLimiter, affirmationRoutes);
+app.use('/api/mood', apiLimiter, moodRoutes);
+app.use('/api/tasks', apiLimiter, taskRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

@@ -11,7 +11,8 @@ router.post('/', authenticateToken, async (req, res) => {
     await mood.save();
     res.status(201).json(mood);
   } catch (error) {
-    res.status(400).json({ message: 'Error saving mood', error: error.message });
+    console.error('Mood save error:', error.message);
+    res.status(400).json({ message: 'Error saving mood' });
   }
 });
 
@@ -22,7 +23,8 @@ router.get('/history', authenticateToken, async (req, res) => {
     const moods = await Mood.find({ userId }).sort({ timestamp: -1 });
     res.json(moods);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching moods', error: error.message });
+    console.error('Mood history error:', error.message);
+    res.status(500).json({ message: 'Error fetching moods' });
   }
 });
 
@@ -38,7 +40,8 @@ router.get('/latest', authenticateToken, async (req, res) => {
 
     res.json(mood);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching latest mood', error: error.message });
+    console.error('Latest mood error:', error.message);
+    res.status(500).json({ message: 'Error fetching latest mood' });
   }
 });
 
@@ -59,7 +62,8 @@ router.get('/today', authenticateToken, async (req, res) => {
 
     res.json(moods);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching today\'s moods', error: error.message });
+    console.error('Today moods error:', error.message);
+    res.status(500).json({ message: 'Error fetching today\'s moods' });
   }
 });
 

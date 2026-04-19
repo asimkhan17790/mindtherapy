@@ -1,5 +1,6 @@
 const express = require('express');
 const Task = require('../models/Task');
+const { authenticateToken } = require('./auth');
 const router = express.Router();
 
 // GET /api/tasks/suggestions - Get task suggestions based on mood
@@ -15,7 +16,8 @@ router.get('/suggestions', async (req, res) => {
     const tasks = await Task.find(query).limit(5);
     res.json(tasks);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching task suggestions', error: error.message });
+    console.error('Task suggestions error:', error.message);
+    res.status(500).json({ message: 'Error fetching task suggestions' });
   }
 });
 
@@ -25,18 +27,20 @@ router.get('/', async (req, res) => {
     const tasks = await Task.find();
     res.json(tasks);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching tasks', error: error.message });
+    console.error('Tasks fetch error:', error.message);
+    res.status(500).json({ message: 'Error fetching tasks' });
   }
 });
 
-// POST /api/tasks - Create new task
-router.post('/', async (req, res) => {
+// POST /api/tasks - Create new task (auth required)
+router.post('/', authenticateToken, async (req, res) => {
   try {
     const task = new Task(req.body);
     await task.save();
     res.status(201).json(task);
   } catch (error) {
-    res.status(400).json({ message: 'Error creating task', error: error.message });
+    console.error('Task create error:', error.message);
+    res.status(400).json({ message: 'Error creating task' });
   }
 });
 
@@ -47,7 +51,8 @@ router.get('/category/:category', async (req, res) => {
     const tasks = await Task.find({ category });
     res.json(tasks);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching tasks by category', error: error.message });
+    console.error('Tasks by category error:', error.message);
+    res.status(500).json({ message: 'Error fetching tasks by category' });
   }
 });
 

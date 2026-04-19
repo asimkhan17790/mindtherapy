@@ -40,15 +40,19 @@ class MindTherapyApp extends StatelessWidget {
         title: 'MindTherapy',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.deepPurple,
-          primaryColor: const Color(0xFF6B46C1),
-          scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-          textTheme: GoogleFonts.poppinsTextTheme(),
+          primaryColor: const Color(0xFF23201C),
+          scaffoldBackgroundColor: const Color(0xFFF4EFE5),
+          textTheme: GoogleFonts.interTextTheme(),
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF6B46C1),
+            seedColor: const Color(0xFF23201C),
             brightness: Brightness.light,
+            surface: const Color(0xFFFBF8F2),
+            onSurface: const Color(0xFF23201C),
           ),
           useMaterial3: true,
+          progressIndicatorTheme: const ProgressIndicatorThemeData(
+            color: Color(0xFF23201C),
+          ),
         ),
         initialRoute: '/',
         routes: {

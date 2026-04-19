@@ -1,5 +1,6 @@
 const express = require('express');
 const Affirmation = require('../models/Affirmation');
+const { authenticateToken } = require('./auth');
 const router = express.Router();
 
 // GET /api/affirmations/random - Get random affirmation
@@ -18,7 +19,8 @@ router.get('/random', async (req, res) => {
 
     res.json(docs[0]);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching affirmation', error: error.message });
+    console.error('Affirmation fetch error:', error.message);
+    res.status(500).json({ message: 'Error fetching affirmation' });
   }
 });
 
@@ -28,18 +30,20 @@ router.get('/', async (req, res) => {
     const affirmations = await Affirmation.find();
     res.json(affirmations);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching affirmations', error: error.message });
+    console.error('Affirmations fetch error:', error.message);
+    res.status(500).json({ message: 'Error fetching affirmations' });
   }
 });
 
-// POST /api/affirmations - Create new affirmation
-router.post('/', async (req, res) => {
+// POST /api/affirmations - Create new affirmation (auth required)
+router.post('/', authenticateToken, async (req, res) => {
   try {
     const affirmation = new Affirmation(req.body);
     await affirmation.save();
     res.status(201).json(affirmation);
   } catch (error) {
-    res.status(400).json({ message: 'Error creating affirmation', error: error.message });
+    console.error('Affirmation create error:', error.message);
+    res.status(400).json({ message: 'Error creating affirmation' });
   }
 });
 

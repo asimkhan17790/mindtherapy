@@ -1,5 +1,6 @@
 {
   "enabledMcpjsonServers": [
     "code-review-graph"
-  ]
+  ],
+  "prefersReducedMotion": true
 }

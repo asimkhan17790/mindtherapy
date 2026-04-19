@@ -151,6 +151,9 @@ class AuthProvider with ChangeNotifier {
     try {
       if (_accessToken == null) return;
 
+      // Guest sessions don't have a real backend token — skip API call
+      if (_accessToken!.startsWith('guest-')) return;
+
       final response = await ApiService.getUserProfile(_accessToken!);
 
       if (response['success'] == true) {
@@ -163,6 +166,19 @@ class AuthProvider with ChangeNotifier {
       debugPrint('Load user profile error: $e');
       await signOut();
     }
+  }
+
+  Future<void> signInAsGuest() async {
+    _user = User(
+      id: 'guest',
+      email: 'guest@mindtherapy.app',
+      name: 'Guest',
+      picture: null,
+      preferences: {},
+    );
+    _accessToken = 'guest-token';
+    _isAuthenticated = true;
+    notifyListeners();
   }
 
   Future<void> signOut() async {

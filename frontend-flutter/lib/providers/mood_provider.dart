@@ -47,6 +47,12 @@ class MoodProvider with ChangeNotifier {
 
   // Load mood history
   Future<void> loadMoodHistory(String token) async {
+    if (token.isEmpty || token.startsWith('guest-')) {
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
     _isLoading = true;
     _error = null;
     notifyListeners();

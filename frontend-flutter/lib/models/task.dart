@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Task {
   final String? id;
   final String title;
@@ -37,20 +39,20 @@ class Task {
   }
 
   // Helper methods
-  String get categoryIcon {
+  IconData get categoryIconData {
     switch (category) {
       case 'family':
-        return '👨‍👩‍👧‍👦';
+        return Icons.people_outline_rounded;
       case 'self-care':
-        return '🧘‍♀️';
+        return Icons.self_improvement_rounded;
       case 'activity':
-        return '🏃‍♀️';
+        return Icons.directions_run_rounded;
       case 'creativity':
-        return '🎨';
+        return Icons.palette_outlined;
       case 'social':
-        return '👥';
+        return Icons.group_outlined;
       default:
-        return '📝';
+        return Icons.edit_note_rounded;
     }
   }
 

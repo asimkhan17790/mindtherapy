@@ -77,9 +77,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
           // Account Section
           const Text(
             'Account',
@@ -349,6 +352,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
         ],
+          ),
+        ),
       ),
     );
   }

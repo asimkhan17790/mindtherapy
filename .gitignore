@@ -51,3 +51,5 @@ Thumbs.db
 *.temp
 # Ignore accidental nul placeholder files in frontend
 frontend-flutter/nul
+
+.claude/

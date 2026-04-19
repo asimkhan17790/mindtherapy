@@ -15,7 +15,7 @@ const taskSchema = new mongoose.Schema({
   },
   moodTags: [{
     type: String,
-    enum: ['happy', 'neutral', 'sad'],
+    enum: ['amazing', 'happy', 'good', 'neutral', 'low', 'sad', 'anxious', 'angry', 'tired', 'stressed'],
     // index is provided via taskSchema.index({ moodTags: 1 }) below — avoid field-level and schema-level duplicates
   }],
   category: {

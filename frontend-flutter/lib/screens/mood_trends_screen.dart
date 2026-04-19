@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/mood_provider.dart';
+import '../providers/auth_provider.dart';
 import '../models/mood.dart';
+import '../app_theme.dart';
 
 class MoodTrendsScreen extends StatefulWidget {
   const MoodTrendsScreen({super.key});
@@ -11,16 +13,16 @@ class MoodTrendsScreen extends StatefulWidget {
 }
 
 class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
-  final String _userId = 'user123'; // TODO: Replace with actual user ID
-
   @override
   void initState() {
     super.initState();
-    _loadMoodHistory();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadMoodHistory());
   }
 
   Future<void> _loadMoodHistory() async {
-    await context.read<MoodProvider>().loadMoodHistory(_userId);
+    if (!mounted) return;
+    final token = context.read<AuthProvider>().accessToken ?? '';
+    await context.read<MoodProvider>().loadMoodHistory(token);
   }
 
   Color _getColorFromHex(String hexColor) {
@@ -30,7 +32,7 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: MT.bg,
       body: Consumer<MoodProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
@@ -73,11 +75,14 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
 
           return RefreshIndicator(
             onRefresh: _loadMoodHistory,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                   // Stats Overview
                   _buildStatsSection(provider),
 
@@ -96,6 +101,8 @@ class _MoodTrendsScreenState extends State<MoodTrendsScreen> {
                   // Full History
                   _buildHistorySection(provider),
                 ],
+                  ),
+                ),
               ),
             ),
           );

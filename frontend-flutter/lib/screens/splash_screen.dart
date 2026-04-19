@@ -275,7 +275,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    provider.todaysAffirmation!.message,
+                                    provider.todaysAffirmation!.cleanMessage,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontSize: 18,
